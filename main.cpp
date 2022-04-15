@@ -17,9 +17,5 @@ int main(int argc, char *argv[])
                                         "Moscow",
                                         0
                                     });
-    QTimer::singleShot(2000, &app, []() {
-                          std::cout << "bay" << std::endl;
-                      });
-
     return app.exec();
 }

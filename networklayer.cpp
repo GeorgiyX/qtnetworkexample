@@ -7,18 +7,21 @@ void NetworkLayer::makeWeatherRequest(const WeatherRequestData &data)
 {
     /* Настраиваем запрос */
     QUrl url;
-    url.setHost("https://wttr.in/Dunedin?2");
-    url.setPath(QString(data.regionName.c_str()));
+    url.setScheme("http");
+    url.setHost("wttr.in");
+    url.setPath(QString::fromStdString(data.regionName));
     url.setQuery(QString("?") + data.dayFromNow);
+    std::cout << "url: " << url.toString().toStdString() << std::endl;
     QNetworkRequest request(url);
     /* Можно также передать body, зоголовки*/
 
     /* Отправляем get запрос */
     auto reply = _networkManager.get(request);
+    reply->setParent(_networkManager.parent());
 
     /* Устанавливаем callback который вызовется после получения ответа */
-    connect(reply, &QNetworkReply::finished, [this]() {
-        onWeatherReply(static_cast<QNetworkReply *>(sender()));
+    connect(reply, &QNetworkReply::finished, [this, reply]() {
+        onWeatherReply(reply);
     });
 
 }
@@ -26,7 +29,7 @@ void NetworkLayer::makeWeatherRequest(const WeatherRequestData &data)
 void NetworkLayer::onWeatherReply(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError) {
-        std::cout << "Запрос не удался" << std::endl;
+        std::cout << "The request failed" << std::endl;
         return;
     }
 
