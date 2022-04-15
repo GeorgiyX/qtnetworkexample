@@ -11,9 +11,7 @@ void NetworkLayer::makeWeatherRequest(const WeatherRequestData &data)
     url.setHost("wttr.in");
     url.setPath(QString::fromStdString(data.regionName));
     url.setQuery(QString("?") + data.dayFromNow);
-    std::cout << "url: " << url.toString().toStdString() << std::endl;
     QNetworkRequest request(url);
-    /* Можно также передать body, зоголовки*/
 
     /* Отправляем get запрос */
     auto reply = _networkManager.get(request);
